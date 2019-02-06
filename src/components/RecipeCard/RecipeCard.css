@@ -1,0 +1,34 @@
+.RecipeCard {
+  width: 48%;
+  height: 320px;
+  margin: 0 0 40px;
+  border-radius: 5px;
+  padding: 20px;
+  background: #89D2DC;
+  box-shadow: 3px 3px 10px #4C5B5C;
+}
+
+.title_container {
+  display: flex;
+  align-items: center;
+}
+
+h3 {
+  margin: 10px 0 0;
+  font-size: 20px;
+}
+
+.ingredients_container {
+  height: 30%;
+  overflow: scroll;
+}
+
+.list {
+  width: 75%;
+  margin: 10px 0 0 30px;
+}
+
+.instructions_container {
+  height: 30%;
+  overflow: scroll;
+}
