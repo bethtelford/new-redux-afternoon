@@ -5,73 +5,9 @@ const initialState = {
   category: "",
   authorFirst: "",
   authorLast: "",
-  ingredients: ["I am an example ingredient"],
-  instructions: ["I am an example instruction"],
-  recipes: [
-    {
-      name: "Wat",
-      category: "brunch",
-      authorFirst: "me",
-      authorLast: "meson",
-      ingredients: [
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing",
-        "thing"
-      ],
-      instructions: [
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing",
-        "do the thing"
-      ]
-    },
-    {
-      name: "Wat",
-      category: "brunch",
-      authorFirst: "me",
-      authorLast: "meson",
-      ingredients: ["thing"],
-      instructions: ["do the thing"]
-    },
-    {
-      name: "Wat",
-      category: "brunch",
-      authorFirst: "me",
-      authorLast: "meson",
-      ingredients: ["thing"],
-      instructions: ["do the thing"]
-    }
-  ]
+  ingredients: [],
+  instructions: [],
+  recipes: []
 };
 
 export const UPDATE_NAME = "UPDATE_NAME";
@@ -120,7 +56,15 @@ function reducer(state = initialState, action) {
       const newRecipes = [...state.recipes, recipe];
       return { ...state, recipes: newRecipes };
     case RESET_INPUTS:
-      return initialState;
+      return {
+        ...state,
+        name: "",
+        category: "",
+        authorFirst: "",
+        authorLast: "",
+        ingredients: [],
+        instructions: []
+      };
     default:
       return state;
   }

@@ -41,7 +41,7 @@ class Ingredients extends Component {
       <div className="List forms">
         <h2>Ingredients:</h2>
         <div className="form_items_container">
-          <ul>{ingredients}</ul>
+          <ul className='list'>{ingredients}</ul>
         </div>
         <div className="add_container">
           <input

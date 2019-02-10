@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import store, { ADD_INSTRUCTION, ADD_RECIPE } from "./../../store";
+import store, { ADD_INSTRUCTION, ADD_RECIPE, RESET_INPUTS } from "./../../store";
 
 class Instructions extends Component {
   constructor(props) {
@@ -37,6 +37,9 @@ class Instructions extends Component {
     store.dispatch({
       type: ADD_RECIPE
     });
+    store.dispatch({
+      type: RESET_INPUTS
+    })
   }
   render() {
     const instructions = this.state.instructions.map((instruction, i) => {
@@ -46,7 +49,7 @@ class Instructions extends Component {
       <div className="List forms">
         <h2>Instructions:</h2>
         <div className="form_items_container">
-          <ol>{instructions}</ol>
+          <ol className='list'>{instructions}</ol>
         </div>
         <div className="add_container">
           <input
