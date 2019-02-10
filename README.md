@@ -348,75 +348,160 @@ In this step, we are going to repeat all the setup we did for `Name.js` for `Aut
 
 ### Instructions
 
-- Open `./src/ducks/counter.js`.
-- Create `UNDO` and `REDO` action types.
-- Write action creators for `UNDO` and `REDO`.
-- Refactor `initialState` and `counter` to handle undo/redo logic.
+- Open `/src/store.js`.
+- Add two properties to `initialState`.
+  - One to store the author's first name.
+  - One to store the author's last name.
+- Create and export two constants to match.
+- Add two corresponding cases to the `switch`.
+- Open `/src/components/Author/Author.js`.
+- Import the `store` and the first and last name action types from `/src/store.js`.
+- Inside the `saveChanges` method, use the `dispatch` (found on the `store`) twice, to send two seperate action objects. 
+  - The action objects should use the action types that were imported.
+  - They should pull the appropriate data from state for the payload.
+-Inside the `constructor`, invoke the `getState` method (found on the `store`) and use the appropriate values from Redux state inside the component's initial state. 
+
+<details>
+<summary>Detailed Instructions</summary>
+
+First we need to add new properties to the initial Redux state.
+```js
+const initialState = {
+  name: "",
+  category: "",
+  authorFirst: "",
+  authorLast: ""
+}
+```
+
+Now we create our action types
+```js
+export const UPDATE_AUTHOR_FIRST = "UPDATE_AUTHOR_FIRST";
+export const UPDATE_AUTHOR_LAST = "UPDATE_AUTHOR_LAST";
+```
+
+Next we need to tell the reducer what to do with these actions when it recieves them. Let's add some cases to our switch. The cases should match the action types we just made, and they should update the piece of state that they need to, and copy the rest of state in an immutable way.
+```js
+case UPDATE_AUTHOR_FIRST:
+  return { ...state, authorFirst: payload };
+case UPDATE_AUTHOR_LAST:
+  return { ...state, authorLast: payload };
+```
+
+Open up `Author.js`. Import the store into this file, along with the action types we need for this component.
+```js
+import store, { UPDATE_AUTHOR_FIRST, UPDATE_AUTHOR_LAST } from "./../../store";
+```
+
+Just like we did in `Name.js`, we need to use the `dispatch` method twice inside the `saveChanges` method that already fires when we click the `Next` button. The type of the action objects used in `dispatch` should match the action types we imported above, and the payload should pull the values from state.
+```js
+saveChanges() {
+  store.dispatch({
+    type: UPDATE_AUTHOR_FIRST,
+    payload: this.state.authorFirst
+  });
+  store.dispatch({
+    type: UPDATE_AUTHOR_LAST,
+    payload: this.state.authorLast
+  });
+}
+```
+
+At this point we're saving the data, but we're not using it yet. Invoke the `getState` method in the constructor and store the return value in a constant. Now reference the appropriate values off of Redux state to replace the empty strings in the component's initial state. 
+```js
+constructor(props) {
+  super(props);
+  const reduxState = store.getState();
+  this.state = {
+    authorFirst: reduxState.authorFirst,
+    authorLast: reduxState.authorLast
+  };
+}
+```
+
+Now when we flip between our pages, we should see our values persist on the Name.js and the Author.js view.
+
+</details>
 
 ### Solution
 
 <details>
 
-<summary> <code> ./src/ducks/counter.js </code> </summary>
+<summary> <code> /src/store.js </code> </summary>
 
 ```js
+import { createStore } from "redux";
+
 const initialState = {
-  currentValue: 0,
-  futureValues: [],
-  previousValues: []
+  name: "",
+  category: "",
+  authorFirst: "",
+  authorLast: ""
 };
 
-const INCREMENT = "INCREMENT";
-const DECREMENT = "DECREMENT";
-const UNDO = "UNDO";
-const REDO = "REDO";
+export const UPDATE_NAME = "UPDATE_NAME";
+export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
+export const UPDATE_AUTHOR_FIRST = "UPDATE_AUTHOR_FIRST";
+export const UPDATE_AUTHOR_LAST = "UPDATE_AUTHOR_LAST";
 
-export default function counter(state = initialState, action) {
-  switch (action.type) {
-    case INCREMENT:
-      return {
-        currentValue: state.currentValue + action.amount,
-        futureValues: [],
-        previousValues: [state.currentValue, ...state.previousValues]
-      };
-    case DECREMENT:
-      return {
-        currentValue: state.currentValue - action.amount,
-        futureValues: [],
-        previousValues: [state.currentValue, ...state.previousValues]
-      };
-    case UNDO:
-      return {
-        currentValue: state.previousValues[0],
-        futureValues: [state.currentValue, ...state.futureValues],
-        previousValues: state.previousValues.slice(1)
-      };
-    case REDO:
-      return {
-        currentValue: state.futureValues[0],
-        futureValues: state.futureValues.slice(1),
-        previousValues: [state.currentValue, ...state.previousValues]
-      };
-    default:
+function reducer(state = initialState, action) {
+  const { type, payload } = action;
+  switch (type) {
+    case UPDATE_NAME:
+      return { ...state, name: payload };
+    case UPDATE_CATEGORY:
+      return { ...state, category: payload };
+    case UPDATE_AUTHOR_FIRST:
+      return { ...state, authorFirst: payload };
+    case UPDATE_AUTHOR_LAST:
+      return { ...state, authorLast: payload };
+    default: 
       return state;
   }
 }
 
-export function increment(amount) {
-  return { amount, type: INCREMENT };
+export default createStore(reducer);
+```
+
+</details>
+
+<details>
+
+<summary> <code> /src/components/Author/Author.js </code> </summary>
+
+```js
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import store, { UPDATE_AUTHOR_FIRST, UPDATE_AUTHOR_LAST } from "./../../store";
+import './Author.css';
+
+class Author extends Component {
+  constructor(props) {
+    super(props);
+    const reduxState = store.getState();
+    this.state = {
+      authorFirst: reduxState.authorFirst,
+      authorLast: reduxState.authorLast
+    };
+  }
+
+  // methods omitted
+
+  saveChanges() {
+    store.dispatch({
+      type: UPDATE_AUTHOR_FIRST,
+      payload: this.state.authorFirst
+    });
+    store.dispatch({
+      type: UPDATE_AUTHOR_LAST,
+      payload: this.state.authorLast
+    });
+  }
+  
+  // render omitted
 }
 
-export function decrement(amount) {
-  return { amount, type: DECREMENT };
-}
-
-export function undo() {
-  return { type: UNDO };
-}
-
-export function redo() {
-  return { type: REDO };
-}
+export default Author;
 ```
 
 </details>
