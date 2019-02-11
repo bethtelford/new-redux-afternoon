@@ -852,19 +852,19 @@ export default createStore(reducer);
 
 <details>
 
-<summary> <code> /src/components/Ingredients/Ingredients.js </code> </summary>
+<summary> <code> /src/components/Instructions/Instructions.js </code> </summary>
 
 ```js
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import store, { ADD_INGREDIENT } from "./../../store";
+import store, { ADD_INSTRUCTION } from "./../../store";
 
-class Ingredients extends Component {
+class Instructions extends Component {
   constructor(props) {
     super(props);
     const reduxState = store.getState();
     this.state = {
-      ingredients: reduxState.ingredients,
+      instructions: reduxState.instructions,
       input: ""
     };
   }
@@ -872,29 +872,301 @@ class Ingredients extends Component {
     store.subscribe(() => {
       const reduxState = store.getState();
       this.setState({
-        ingredients: reduxState.ingredients
+        instructions: reduxState.instructions
       });
     });
   }
   // method omitted
-  addIngredient() {
+  addInstruction() {
     store.dispatch({
-      type: ADD_INGREDIENT,
+      type: ADD_INSTRUCTION,
       payload: this.state.input
     });
     this.setState({
       input: ""
     });
   }
-  // render omitted
+  // method & render omitted
 }
 
-export default Ingredients;
+export default Instructions;
 ```
 
 </details>
 
-<img src="https://github.com/DevMountain/react-5-mini/blob/solution/readme-assets/4g.gif" />
+## Step 8
+
+### Summary
+
+In this step, we'll use all the values we've saved on Redux to create a recipe.
+
+### Instructions
+
+- Open `/src/store.js`.
+- Add a property to `initialState` to store the list of recipes.
+- Create and export a constant to match.
+- Add a case to the `switch`. This case should use the values already stored on state to create the new recipe and won't rely on a payload.
+- Open `/src/components/Instructions/Instructions.js`.
+- Import the recipe action type from `/src/store.js`.
+- Inside the `create` method, use `dispatch` (found on the `store`) to send an action object.
+  - It should use the action type that was imported.
+  - It should not include a payload.
+
+<details>
+<summary>Detailed Instructions</summary>
+
+First we need to add a new property to the initial Redux state and create an action type
+
+```js
+const initialState = {
+  name: "",
+  category: "",
+  authorFirst: "",
+  authorLast: "",
+  ingredients: [],
+  instructions: [],
+  recipes: []
+};
+
+export const ADD_RECIPE = "ADD_RECIPE";
+```
+
+Now we'll add a case to our `reducer`. This case will be quite a bit different from what we've done so far, because it doesn't use a payload. Payloads are really useful when we need to transfer data from a component to Redux, but in this case all the data is already being stored in Redux. So we'll pull all the values we've been storing so far off of state and build a recipe object with it. Then we we'll want to copy our list of recipes and add our a new recipe to it. Then of course we need to copy the rest of state in an immutable way.
+
+```js
+case ADD_RECIPE:
+  const {
+    name,
+    category,
+    authorFirst,
+    authorLast,
+    ingredients,
+    instructions
+  } = state;
+  const recipe = {
+    name,
+    category,
+    authorFirst,
+    authorLast,
+    ingredients,
+    instructions
+  };
+  const newRecipes = [...state.recipes, recipe];
+  return { ...state, recipes: newRecipes };
+```
+
+Open up `Instructions.js`. Import the recipe action type.
+
+```js
+import store, { ADD_INSTRUCTION, ADD_RECIPE } from "./../../store";
+```
+
+We need to use the dispatch method again, this time inside `create`. The type of the action object used in dispatch should match the action type we just imported, and there shouldn't be a payload.
+
+```js
+create() {
+  store.dispatch({
+    type: ADD_RECIPE
+  });
+}
+```
+
+Now when we click the `Create` button, we will actually create a new recipe! (It just doesn't display anywhere yet).
+
+</details>
+
+### Solution
+
+<details>
+
+<summary> <code> /src/store.js </code> </summary>
+
+```js
+import { createStore } from "redux";
+
+const initialState = {
+  name: "",
+  category: "",
+  authorFirst: "",
+  authorLast: "",
+  ingredients: [],
+  instructions: [],
+  recipes: []
+};
+
+export const UPDATE_NAME = "UPDATE_NAME";
+export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
+export const UPDATE_AUTHOR_FIRST = "UPDATE_AUTHOR_FIRST";
+export const UPDATE_AUTHOR_LAST = "UPDATE_AUTHOR_LAST";
+export const ADD_INGREDIENT = "ADD_INGREDIENT";
+export const ADD_INSTRUCTION = "ADD_INSTRUCTION";
+export const ADD_RECIPE = "ADD_RECIPE";
+
+function reducer(state = initialState, action) {
+  const { type, payload } = action;
+  switch (type) {
+    case UPDATE_NAME:
+      return { ...state, name: payload };
+    case UPDATE_CATEGORY:
+      return { ...state, category: payload };
+    case UPDATE_AUTHOR_FIRST:
+      return { ...state, authorFirst: payload };
+    case UPDATE_AUTHOR_LAST:
+      return { ...state, authorLast: payload };
+    case ADD_INGREDIENT:
+      const newIngredients = [...state.ingredients, payload];
+      return { ...state, ingredients: newIngredients };
+    case ADD_INSTRUCTION:
+      const newInstructions = [...state.instructions, payload];
+      return { ...state, instructions: newInstructions };
+    case ADD_RECIPE:
+      const {
+        name,
+        category,
+        authorFirst,
+        authorLast,
+        ingredients,
+        instructions
+      } = state;
+      const recipe = {
+        name,
+        category,
+        authorFirst,
+        authorLast,
+        ingredients,
+        instructions
+      };
+      const newRecipes = [...state.recipes, recipe];
+      return { ...state, recipes: newRecipes };
+    default:
+      return state;
+  }
+}
+
+export default createStore(reducer);
+```
+
+</details>
+
+<details>
+
+<summary> <code> /src/components/Instructions/Instructions.js </code> </summary>
+
+```js
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import store, { ADD_INSTRUCTION, ADD_RECIPE } from "./../../store";
+
+class Instructions extends Component {
+  constructor(props) {
+    super(props);
+    const reduxState = store.getState();
+    this.state = {
+      instructions: reduxState.instructions,
+      input: ""
+    };
+  }
+  componentDidMount() {
+    store.subscribe(() => {
+      const reduxState = store.getState();
+      this.setState({
+        instructions: reduxState.instructions
+      });
+    });
+  }
+  // method omitted
+  addInstruction() {
+    store.dispatch({
+      type: ADD_INSTRUCTION,
+      payload: this.state.input
+    });
+    this.setState({
+      input: ""
+    });
+  }
+  create() {
+    store.dispatch({
+      type: ADD_RECIPE
+    });
+  }
+  // render omitted
+}
+
+export default Instructions;
+```
+
+</details>
+
+## Step 9
+
+### Summary
+
+Finally we'll get our recipes to display in `Home.js`.
+
+### Instructions
+
+- Open `/src/components/Home/Home.js`.
+- Import the `store` from `/src/store.js`.
+- Inside the constructor, invoke the `getState` method (found on the `store`) and use the appropriate value from Redux state inside the component's initial state.
+
+<details>
+<summary>Detailed Instructions</summary>
+
+We are almost done! All our data is being saved correctly; we just have to display our finished recipes.
+
+First we need to import the `store` in `Home.js`
+```js
+import store from "./../../store";
+```
+
+Now we need to use `getState` once again to pull the data from Redux state for the component's initial state
+```js
+constructor(props) {
+  super(props);
+  const reduxState = store.getState();
+  this.state = {
+    recipes: reduxState.recipes
+  };
+}
+```
+
+And we are done! Any recipe you create should show up on the `Home.js` view. 
+
+</details>
+
+### Solution
+
+<details>
+
+<summary> <code> /src/components/Home/Home.js </code> </summary>
+
+```js
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import RecipeCard from "./../RecipeCard/RecipeCard";
+import store from "./../../store";
+import "./Home.css";
+
+class Home extends Component {
+  constructor(props) {
+    super(props);
+    const reduxState = store.getState();
+    this.state = {
+      recipes: reduxState.recipes
+    };
+  }
+  // render omitted
+}
+
+export default Home;
+```
+
+</details>
+
+## Black Diamond
+
+- When we create a recipe, the fields in our form don't clear. Create another action type to clear the fields when we create a new recipe.
+- Right now each recipe displays a delete button that doesn't do anything. Create another action type to delete a recipe and hook it up to the delete button.
 
 ## Contributions
 
