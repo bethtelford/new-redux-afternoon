@@ -228,6 +228,7 @@ import store, { UPDATE_NAME, UPDATE_CATEGORY } from "./../../store.js";
 ```
 
 The store is an object with a method on it called `dispatch` that we can use to send actions to the `reducer`. We'll want to use this method twice, once for each piece of data that this component needs to save to Redux. We'll set these up inside the `saveChanges` method that already fires when we click the `Next` button.
+
 ```js
 saveChanges() {
   store.dispatch();
@@ -236,6 +237,7 @@ saveChanges() {
 ```
 
 Both of these `dispatch` methods will send an action object to the `reducer`. The type of the action objects should match the action types we imported above, and the payload should pull the values of the input boxes from state where they are being stored.
+
 ```js
 saveChanges() {
   store.dispatch({
@@ -248,7 +250,6 @@ saveChanges() {
   });
 }
 ```
-
 
 </details>
 
@@ -300,11 +301,13 @@ At this point, we can save the input values from `Name.js` to Redux, but we aren
 <summary>Detailed Instructions</summary>
 
 The store is an object with a method on it called `getState` that we can use to access the Redux state object. We'll invoke this method inside our constructor and store the return value in a constant so we can reference it easily.
+
 ```js
 const reduxState = store.getState();
 ```
 
 The reason we are invoking this method in the constructor is so we can use the value in our component's initial state. We will reference the appropriate properties off of the Redux state to replace the empty strings that are in the component's state right now.
+
 ```js
 this.state = {
   name: reduxState.name,
@@ -335,7 +338,7 @@ class Name extends Component {
   }
   // methods and render omitted
 }
-export default Name
+export default Name;
 ```
 
 </details>
@@ -344,7 +347,7 @@ export default Name
 
 ### Summary
 
-In this step, we are going to repeat all the setup we did for `Name.js` for `Author.js`. 
+In this step, we are going to repeat all the setup we did for `Name.js` for `Author.js`.
 
 ### Instructions
 
@@ -356,31 +359,34 @@ In this step, we are going to repeat all the setup we did for `Name.js` for `Aut
 - Add two corresponding cases to the `switch`.
 - Open `/src/components/Author/Author.js`.
 - Import the `store` and the first and last name action types from `/src/store.js`.
-- Inside the `saveChanges` method, use the `dispatch` (found on the `store`) twice, to send two seperate action objects. 
+- Inside the `saveChanges` method, use `dispatch` (found on the `store`) twice, to send two seperate action objects.
   - The action objects should use the action types that were imported.
   - They should pull the appropriate data from state for the payload.
--Inside the `constructor`, invoke the `getState` method (found on the `store`) and use the appropriate values from Redux state inside the component's initial state. 
+- Inside the `constructor`, invoke the `getState` method (found on the `store`) and use the appropriate values from Redux state inside the component's initial state.
 
 <details>
 <summary>Detailed Instructions</summary>
 
 First we need to add new properties to the initial Redux state.
+
 ```js
 const initialState = {
   name: "",
   category: "",
   authorFirst: "",
   authorLast: ""
-}
+};
 ```
 
 Now we create our action types
+
 ```js
 export const UPDATE_AUTHOR_FIRST = "UPDATE_AUTHOR_FIRST";
 export const UPDATE_AUTHOR_LAST = "UPDATE_AUTHOR_LAST";
 ```
 
 Next we need to tell the reducer what to do with these actions when it recieves them. Let's add some cases to our switch. The cases should match the action types we just made, and they should update the piece of state that they need to, and copy the rest of state in an immutable way.
+
 ```js
 case UPDATE_AUTHOR_FIRST:
   return { ...state, authorFirst: payload };
@@ -389,11 +395,13 @@ case UPDATE_AUTHOR_LAST:
 ```
 
 Open up `Author.js`. Import the store into this file, along with the action types we need for this component.
+
 ```js
 import store, { UPDATE_AUTHOR_FIRST, UPDATE_AUTHOR_LAST } from "./../../store";
 ```
 
-Just like we did in `Name.js`, we need to use the `dispatch` method twice inside the `saveChanges` method that already fires when we click the `Next` button. The type of the action objects used in `dispatch` should match the action types we imported above, and the payload should pull the values from state.
+Just like we did in `Name.js`, we need to use the `dispatch` method twice inside the `saveChanges` method that already fires when we click the `Next` or `Previous` buttons. The type of the action objects used in `dispatch` should match the action types we imported above, and the payload should pull the values from state.
+
 ```js
 saveChanges() {
   store.dispatch({
@@ -407,7 +415,8 @@ saveChanges() {
 }
 ```
 
-At this point we're saving the data, but we're not using it yet. Invoke the `getState` method in the constructor and store the return value in a constant. Now reference the appropriate values off of Redux state to replace the empty strings in the component's initial state. 
+At this point we're saving the data, but we're not using it yet. Invoke the `getState` method in the constructor and store the return value in a constant. Now reference the appropriate values off of Redux state to replace the empty strings in the component's initial state.
+
 ```js
 constructor(props) {
   super(props);
@@ -455,7 +464,7 @@ function reducer(state = initialState, action) {
       return { ...state, authorFirst: payload };
     case UPDATE_AUTHOR_LAST:
       return { ...state, authorLast: payload };
-    default: 
+    default:
       return state;
   }
 }
@@ -473,7 +482,7 @@ export default createStore(reducer);
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import store, { UPDATE_AUTHOR_FIRST, UPDATE_AUTHOR_LAST } from "./../../store";
-import './Author.css';
+import "./Author.css";
 
 class Author extends Component {
   constructor(props) {
@@ -497,7 +506,7 @@ class Author extends Component {
       payload: this.state.authorLast
     });
   }
-  
+
   // render omitted
 }
 
@@ -510,92 +519,380 @@ export default Author;
 
 ### Summary
 
-In this step, we'll import `undo` and `redo` action creators into our `Counter.js` and hook them up their respective buttons.
+In this step, we'll set up `Ingredients.js` much the same way we have `Name.js` and `Author.js`, but we'll need to add one more piece. The `Ingredients.js` view needs to update Redux before we navigate to a new page, so we need to be able to pull data from Redux whenever there are changes, not just in the constructor.
 
 ### Instructions
 
-- Open `./src/Counter.js`.
-- Import `undo` and `redo` action creators.
-- Add `undo` and `redo` to `mapDispatchToProps`.
-- Destrucuture `undo` and `redo` from `props`.
-- Hook up the `undo` and `redo` buttons to their respective action creators.
+- Open `/src/store.js`.
+- Add a property to `initialState` to store the list of ingredients.
+- Create and export a constant to match.
+- Add a case to the `switch`.
+- Open `/src/components/Ingredients/Ingredients.js`.
+- Import the `store` and the ingredients action type from `/src/store.js`.
+- Inside the `addIngredient` method, use `dispatch` (found on the `store`) to send an action object.
+  - It should use the action type that was imported.
+  - It should pull the input data from state for the payload.
+- Inside the `constructor`, invoke the `getState` method (found on the `store`) and use the appropriate value from Redux state inside the component's initial state.
+- Now for the new part! Inside of `componentDidMount`, use the `subscribe` method that lives on `store`.
+  - `subscribe` takes a callback function as its argument.
+  - This callback should invoke `getState` just like the constructor does.
+  - Then it should call `this.setState` and use the value from Redux state to update the component's state.
+
+<details>
+<summary>Detailed instructions</summary>
+
+First we need to add a new property to the initial Redux state, create an action type, and add a case to our `reducer`. This case will look a little more complicated than the ones we've done before because we're working with a list now, so we'll need to make a copy of that list before making changes.
+
+```js
+const initialState = {
+  name: "",
+  category: "",
+  authorFirst: "",
+  authorLast: "",
+  ingredients: []
+}
+
+export const ADD_INGREDIENT = "ADD_INGREDIENT";
+
+case ADD_INGREDIENT:
+  const newIngredients = [...state.ingredients, payload];
+  return { ...state, ingredients: newIngredients };
+```
+
+Open up `Ingredients.js`. Import the `store` into this file, along with the action type.
+
+```js
+import store, { ADD_INGREDIENT } from "./../../store";
+```
+
+Just like we did before, we need to use the dispatch method. This time we only need to use it once, and it should go inside `addIngredient`. The type of the action object used in dispatch should match the action type we imported above, and the payload should pull the input value from state.
+
+```js
+addIngredient() {
+  store.dispatch({
+    type: ADD_INGREDIENT,
+    payload: this.state.input
+  });
+  this.setState({
+    input: ""
+  });
+}
+```
+
+Now just like before, we need to set up the constructor to pull in its initial state from Redux state.
+
+```js
+constructor(props) {
+  super(props);
+  const reduxState = store.getState();
+  this.state = {
+    ingredients: reduxState.ingredients,
+    input: ""
+  };
+}
+```
+
+Now we're really close. At this point we're saving our data on Redux, and we can see it show up, but only if we navigate away from the page and back again. So now we just need to make our list show up without leaving the page.
+
+First we need to create a `componentDidMount` method for this component. Inside this method we are going to use another piece that comes from `store`. This one is called `subscribe`. `subcribe` allows us to update our page any time the data on Redux state changes.
+
+`subscribe` takes a callback function as its argument that will fire any time there is an update in Redux. So every time this function fires we want to use `getState` to get an updated version of the Redux state. Then we'll use `this.setState` to update our component's state with the new values.
+
+```js
+componentDidMount() {
+  store.subscribe(() => {
+    const reduxState = store.getState();
+    this.setState({
+      ingredients: reduxState.ingredients
+    });
+  });
+}
+```
+
+Now when we are on the `Ingredients.js` we can see our list update, and when we flip between our pages, we should see our values persist on the `Name.js`, the `Author.js`, and the `Ingredients.js` view.
+
+</details>
 
 ### Solution
 
 <details>
 
-<summary> <code> ./src/Counter.js </code> </summary>
+<summary> <code> /src/store.js </code> </summary>
 
 ```js
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import { createStore } from "redux";
 
-import { decrement, increment, redo, undo } from "./ducks/counter";
+const initialState = {
+  name: "",
+  category: "",
+  authorFirst: "",
+  authorLast: "",
+  ingredients: []
+};
 
-class Counter extends Component {
-  render() {
-    const {
-      currentValue,
-      decrement,
-      futureValues,
-      increment,
-      previousValues,
-      redo,
-      undo
-    } = this.props;
-    return (
-      <div className="app">
-        <section className="counter">
-          <h1 className="counter__current-value">{currentValue}</h1>
-          <div className="counter__button-wrapper">
-            <button className="counter__button" onClick={() => increment(1)}>
-              +1
-            </button>
-            <button className="counter__button" onClick={() => increment(5)}>
-              +5
-            </button>
-            <button className="counter__button" onClick={() => decrement(1)}>
-              -1
-            </button>
-            <button className="counter__button" onClick={() => decrement(5)}>
-              -5
-            </button>
-            <br />
-            <button
-              className="counter__button"
-              disabled={previousValues.length === 0}
-              onClick={undo}
-            >
-              Undo
-            </button>
-            <button
-              className="counter__button"
-              disabled={futureValues.length === 0}
-              onClick={redo}
-            >
-              Redo
-            </button>
-          </div>
-        </section>
-        <section className="state">
-          <pre>{JSON.stringify(this.props, null, 2)}</pre>
-        </section>
-      </div>
-    );
+export const UPDATE_NAME = "UPDATE_NAME";
+export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
+export const UPDATE_AUTHOR_FIRST = "UPDATE_AUTHOR_FIRST";
+export const UPDATE_AUTHOR_LAST = "UPDATE_AUTHOR_LAST";
+export const ADD_INGREDIENT = "ADD_INGREDIENT";
+
+function reducer(state = initialState, action) {
+  const { type, payload } = action;
+  switch (type) {
+    case UPDATE_NAME:
+      return { ...state, name: payload };
+    case UPDATE_CATEGORY:
+      return { ...state, category: payload };
+    case UPDATE_AUTHOR_FIRST:
+      return { ...state, authorFirst: payload };
+    case UPDATE_AUTHOR_LAST:
+      return { ...state, authorLast: payload };
+    case ADD_INGREDIENT:
+      const newIngredients = [...state.ingredients, payload];
+      return { ...state, ingredients: newIngredients };
+    default:
+      return state;
   }
 }
 
-const mapStateToProps = state => state;
-
-export default connect(
-  mapStateToProps,
-  { decrement, increment, redo, undo }
-)(Counter);
+export default createStore(reducer);
 ```
 
 </details>
 
-<br />
+<details>
+
+<summary> <code> /src/components/Ingredients/Ingredients.js </code> </summary>
+
+```js
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import store, { ADD_INGREDIENT } from "./../../store";
+
+class Ingredients extends Component {
+  constructor(props) {
+    super(props);
+    const reduxState = store.getState();
+    this.state = {
+      ingredients: reduxState.ingredients,
+      input: ""
+    };
+  }
+  componentDidMount() {
+    store.subscribe(() => {
+      const reduxState = store.getState();
+      this.setState({
+        ingredients: reduxState.ingredients
+      });
+    });
+  }
+  // method omitted
+  addIngredient() {
+    store.dispatch({
+      type: ADD_INGREDIENT,
+      payload: this.state.input
+    });
+    this.setState({
+      input: ""
+    });
+  }
+  // render omitted
+}
+
+export default Ingredients;
+```
+
+</details>
+
+## Step 7
+
+### Summary
+
+In this step, we'll set up `Instructions.js` like we have `Ingredients.js`.
+
+### Instructions
+
+- Open `/src/store.js`.
+- Add a property to `initialState` to store the list of instructions.
+- Create and export a constant to match.
+- Add a case to the `switch`.
+- Open `/src/components/Instructions/Instructions.js`.
+- Import the `store` and the instructions action type from `/src/store.js`.
+- Inside the `addInstruction` method, use `dispatch` (found on the `store`) to send an action object.
+  - It should use the action type that was imported.
+  - It should pull the input data from state for the payload.
+- Inside the `constructor`, invoke the `getState` method (found on the `store`) and use the appropriate value from Redux state inside the component's initial state.
+- Inside of `componentDidMount`, use the `subscribe` method (found on the `store`).
+  - The callback for `subscribe` should invoke `getState` just like the constructor does.
+  - Then it should call `this.setState` and use the value from Redux state to update the component's state.
+
+<details>
+<summary>Detailed Instructions</summary>
+
+First we need to add a new property to the initial Redux state, create an action type, and add a case to our `reducer`. This case will be very similar to the one we created for `Ingredients.js`
+
+```js
+const initialState = {
+  name: "",
+  category: "",
+  authorFirst: "",
+  authorLast: "",
+  ingredients: [],
+  instructions: []
+}
+
+export const ADD_INSTRUCTION = "ADD_INSTRUCTION";
+
+case ADD_INSTRUCTION:
+  const newInstructions = [...state.instructions, payload];
+  return { ...state, instructions: newInstructions };
+```
+
+Open up `Instructions.js`. Import the `store` into this file, along with the action type.
+
+```js
+import store, { ADD_INSTRUCTION } from "./../../store";
+```
+
+Just like we did before, we need to use the dispatch method inside `addInstruction`. The type of the action object used in dispatch should match the action type we imported above, and the payload should pull the input value from state.
+
+```js
+addInstruction() {
+  store.dispatch({
+    type: ADD_INSTRUCTION,
+    payload: this.state.input
+  });
+  this.setState({
+    input: ""
+  });
+}
+```
+
+Now just like before, we need to set up the constructor to pull in its initial state from Redux state.
+
+```js
+constructor(props) {
+  super(props);
+  const reduxState = store.getState();
+  this.state = {
+    instructions: reduxState.instructions,
+    input: ""
+  };
+}
+```
+
+Next we need to listen to changes using `subscribe` like we did in `Ingredients.js`. Create a `componentDidMount` method for this component. `subscribe` goes inside this method. The callback function that we pass in should use `getState` to get an updated version of the Redux state. Then we'll use `this.setState` to update our component's state with the new values.
+
+```js
+componentDidMount() {
+  store.subscribe(() => {
+    const reduxState = store.getState();
+    this.setState({
+      instructions: reduxState.instructions
+    });
+  });
+}
+```
+
+Now we should see our lists update on both the `Ingredients.js` and `Instructions.js` pages. When we flip between our pages, we should see our values persist on the `Name.js`, the `Author.js`, the `Ingredients.js`, and the `Instructions.js` view.
+
+</details>
+
+### Solution
+
+<details>
+
+<summary> <code> /src/store.js </code> </summary>
+
+```js
+import { createStore } from "redux";
+
+const initialState = {
+  name: "",
+  category: "",
+  authorFirst: "",
+  authorLast: "",
+  ingredients: [],
+  instructions
+};
+
+export const UPDATE_NAME = "UPDATE_NAME";
+export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
+export const UPDATE_AUTHOR_FIRST = "UPDATE_AUTHOR_FIRST";
+export const UPDATE_AUTHOR_LAST = "UPDATE_AUTHOR_LAST";
+export const ADD_INGREDIENT = "ADD_INGREDIENT";
+export const ADD_INSTRUCTION = "ADD_INSTRUCTION";
+
+function reducer(state = initialState, action) {
+  const { type, payload } = action;
+  switch (type) {
+    case UPDATE_NAME:
+      return { ...state, name: payload };
+    case UPDATE_CATEGORY:
+      return { ...state, category: payload };
+    case UPDATE_AUTHOR_FIRST:
+      return { ...state, authorFirst: payload };
+    case UPDATE_AUTHOR_LAST:
+      return { ...state, authorLast: payload };
+    case ADD_INGREDIENT:
+      const newIngredients = [...state.ingredients, payload];
+      return { ...state, ingredients: newIngredients };
+    case ADD_INSTRUCTION:
+      const newInstructions = [...state.instructions, payload];
+      return { ...state, instructions: newInstructions };
+    default:
+      return state;
+  }
+}
+
+export default createStore(reducer);
+```
+
+</details>
+
+<details>
+
+<summary> <code> /src/components/Ingredients/Ingredients.js </code> </summary>
+
+```js
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import store, { ADD_INGREDIENT } from "./../../store";
+
+class Ingredients extends Component {
+  constructor(props) {
+    super(props);
+    const reduxState = store.getState();
+    this.state = {
+      ingredients: reduxState.ingredients,
+      input: ""
+    };
+  }
+  componentDidMount() {
+    store.subscribe(() => {
+      const reduxState = store.getState();
+      this.setState({
+        ingredients: reduxState.ingredients
+      });
+    });
+  }
+  // method omitted
+  addIngredient() {
+    store.dispatch({
+      type: ADD_INGREDIENT,
+      payload: this.state.input
+    });
+    this.setState({
+      input: ""
+    });
+  }
+  // render omitted
+}
+
+export default Ingredients;
+```
+
+</details>
 
 <img src="https://github.com/DevMountain/react-5-mini/blob/solution/readme-assets/4g.gif" />
 
