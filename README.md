@@ -813,7 +813,7 @@ const initialState = {
   authorFirst: "",
   authorLast: "",
   ingredients: [],
-  instructions
+  instructions: []
 };
 
 export const UPDATE_NAME = "UPDATE_NAME";
