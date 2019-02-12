@@ -22,7 +22,6 @@ class Instructions extends Component {
   }
   create() {
     // Create new recipe in Redux state
-    // Reset all input values in Redux state 
   }
   render() {
     const instructions = this.state.instructions.map((instruction, i) => {
