@@ -15,8 +15,6 @@ In this project, we'll create an application to create and view recipe cards usi
 - Run `npm install` to fetch the project dependencies.
 - Run `npm start` to spin up a development server.
 
-<img src="https://github.com/DevMountain/react-5-mini/blob/solution/readme-assets/1.png" />
-
 ## Step 1
 
 ### Summary
