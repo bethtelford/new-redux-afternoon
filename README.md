@@ -39,19 +39,19 @@ In Redux, components need to connect to a store. Let's create this store. Open `
 import { createStore } from "redux";
 ```
 
-In order to create our store, we'll also need to create our state and reducer. Let's start with state. Our state will be empty for now.
+In order to create our store, we'll also need to create our initial state and reducer. Let's start with state. Our state will be empty for now.
 
 ```js
 const initialState = {};
 ```
 
-Now that our initial state is set up, let's build a basic reducer. The reducer is a function that takes in two things: state and an action. Let's use our `initialState` as the default value for state.
+Now that our initial state is set up, let's build a basic `reducer`. The `reducer` is a function that takes in two things: `state` and an `action`. Let's use our `initialState` as the default value for `state`.
 
 ```js
 function reducer(state = initialState, action) {}
 ```
 
-Next we should build the switch statement inside the reducer. The switch should test the `type` property of the `action` object. It should return state unaltered as the default. Let's also destructure the action object for easy access to its properties.
+Next we should build the `switch` statement inside the `reducer`. The `switch` should test the `type` property of the `action` object. It should return `state` unaltered as the default. Let's also destructure the `action` object for easy access to its properties.
 
 ```js
 function reducer(state = initialState, action) {
@@ -63,7 +63,7 @@ function reducer(state = initialState, action) {
 }
 ```
 
-Now that we have all the pieces we need, let's create and export our store. We'll want to make this export the default
+Now that we have all the pieces we need, let's create and export our `store`. We'll want to make this export the default.
 
 ```js
 export default createStore(reducer);
@@ -106,7 +106,7 @@ In this step, we'll expand our `reducer` so we can update the name and the categ
 - Add two properties to `initialState` in `store.js`
   - One to store the recipe name.
   - One to store the recipe category.
-- Create two constants.
+- Create two action type constants.
   - One for for updating the recipe name.
   - One for updating the recipe category.
   - Remember to export them.
@@ -133,7 +133,7 @@ export const UPDATE_NAME = "UPDATE_NAME";
 export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
 ```
 
-Next we need to tell the `reducer` what to do with these actions when it recieves them. Let's add some cases to our `switch`. The cases should match the action types we just made.
+Next we need to tell the `reducer` what to do with these actions when it recieves them. Let's add a `case` for each of our  `actions` to our `switch`. These should match the action types we just made.
 
 ```js
 function reducer(state = initialState, action) {
@@ -149,7 +149,7 @@ function reducer(state = initialState, action) {
 }
 ```
 
-Each case should update the piece of state that it needs to, and copy the rest of state in an immutable way.
+Each case should update the piece of `state` that it needs to, and copy the rest of `state` in an immutable way.
 
 ```js
 function reducer(state = initialState, action) {
@@ -205,7 +205,7 @@ export default createStore(reducer);
 
 ### Summary
 
-In this step, we'll set up our first view, `Name.js`, to use the action types we just added to our store.
+In this step, we'll set up our first view, `Name.js`, to use the action types we just added to `store.js`.
 
 ### Instructions
 
@@ -225,7 +225,7 @@ First we need to import the `store` we created into this file, along with the ac
 import store, { UPDATE_NAME, UPDATE_CATEGORY } from "./../../store.js";
 ```
 
-The store is an object with a method on it called `dispatch` that we can use to send actions to the `reducer`. We'll want to use this method twice, once for each piece of data that this component needs to save to Redux. We'll set these up inside the `saveChanges` method that already fires when we click the `Next` button.
+The `store` is an object with a method on it called `dispatch` that we can use to send actions to the `reducer`. We'll want to use this method twice, once for each piece of data that this component needs to save to Redux. We'll set these up inside the `saveChanges` method that already fires when we click the `Next` button.
 
 ```js
 saveChanges() {
@@ -264,7 +264,7 @@ import store, { UPDATE_NAME, UPDATE_CATEGORY } from "./../../store";
 import "./Name.css";
 
 class Name extends Component {
-  // Several lines for the constructor and methods omitted
+  // Several lines for the constructor and handler methods omitted
   saveChanges() {
     store.dispatch({
       type: UPDATE_NAME,
@@ -291,20 +291,20 @@ At this point, we can save the input values from `Name.js` to Redux, but we aren
 ### Instructions
 
 - Inside the `constructor`, use the `getState` method that lives on `store`.
-  - Store the return value in a const so we can reference it later.
+  - Store the return value in a `const` so we can reference it later.
 - Now change the initial state to use the appropriate values off of Redux state instead of empty strings.
-  - This means that when the component first mounts it will pull the data we saved earlier.
+  - This means that when the component first mounts, it will pull the data we saved earlier.
 
 <details>
 <summary>Detailed Instructions</summary>
 
-The store is an object with a method on it called `getState` that we can use to access the Redux state object. We'll invoke this method inside our constructor and store the return value in a constant so we can reference it easily.
+The `store` is an object with a method on it called `getState` that we can use to access the Redux state object. We'll invoke this method inside our `constructor` and store the return value in a constant so we can reference it easily.
 
 ```js
 const reduxState = store.getState();
 ```
 
-The reason we are invoking this method in the constructor is so we can use the value in our component's initial state. We will reference the appropriate properties off of the Redux state to replace the empty strings that are in the component's state right now.
+The reason we are invoking this method in the `constructor` is so we can use the value in our component's initial state. We will reference the appropriate properties off of the Redux state to replace the empty strings that are in the component's state right now.
 
 ```js
 this.state = {
@@ -383,7 +383,7 @@ export const UPDATE_AUTHOR_FIRST = "UPDATE_AUTHOR_FIRST";
 export const UPDATE_AUTHOR_LAST = "UPDATE_AUTHOR_LAST";
 ```
 
-Next we need to tell the reducer what to do with these actions when it recieves them. Let's add some cases to our switch. The cases should match the action types we just made, and they should update the piece of state that they need to, and copy the rest of state in an immutable way.
+Next we need to tell the `reducer` what to do with these `action` objects when it recieves them. Let's add a `case` for each `action` to our switch. They should match the types we just made, and they should update the piece of `state` that they need to, and copy the rest of `state` in an immutable way.
 
 ```js
 case UPDATE_AUTHOR_FIRST:
@@ -398,7 +398,7 @@ Open up `Author.js`. Import the store into this file, along with the action type
 import store, { UPDATE_AUTHOR_FIRST, UPDATE_AUTHOR_LAST } from "./../../store";
 ```
 
-Just like we did in `Name.js`, we need to use the `dispatch` method twice inside the `saveChanges` method that already fires when we click the `Next` or `Previous` buttons. The type of the action objects used in `dispatch` should match the action types we imported above, and the payload should pull the values from state.
+Just like we did in `Name.js`, we need to use the `dispatch` method twice inside the `saveChanges` method that already fires when we click the `Next` or `Previous` buttons. The `type` of the `action` objects used in `dispatch` should match the `action` types we imported above, and the `payload` should pull the values from the component's state.
 
 ```js
 saveChanges() {
@@ -426,7 +426,7 @@ constructor(props) {
 }
 ```
 
-Now when we flip between our pages, we should see our values persist on the Name.js and the Author.js view.
+Now when we flip between our pages, we should see our values persist on the `Name.js` and the `Author.js` view.
 
 </details>
 
@@ -492,7 +492,7 @@ class Author extends Component {
     };
   }
 
-  // methods omitted
+  // handler methods omitted
 
   saveChanges() {
     store.dispatch({
@@ -517,19 +517,19 @@ export default Author;
 
 ### Summary
 
-In this step, we'll set up `Ingredients.js` much the same way we have `Name.js` and `Author.js`, but we'll need to add one more piece. The `Ingredients.js` view needs to update Redux before we navigate to a new page, so we need to be able to pull data from Redux whenever there are changes, not just in the constructor.
+In this step, we'll set up `Ingredients.js` much the same way we have `Name.js` and `Author.js`, but we'll need to add one more piece. The `Ingredients.js` view needs to update Redux before we navigate to a new page, so we need to be able to pull data from Redux whenever there are changes, not just in the `constructor`.
 
 ### Instructions
 
 - Open `/src/store.js`.
 - Add a property to `initialState` to store the list of ingredients.
 - Create and export a constant to match.
-- Add a case to the `switch`.
+- Add a `case` to the `switch`.
 - Open `/src/components/Ingredients/Ingredients.js`.
 - Import the `store` and the ingredients action type from `/src/store.js`.
 - Inside the `addIngredient` method, use `dispatch` (found on the `store`) to send an action object.
   - It should use the action type that was imported.
-  - It should pull the input data from state for the payload.
+  - It should pull the input data from state for the `payload`.
 - Inside the `constructor`, invoke the `getState` method (found on the `store`) and use the appropriate value from Redux state inside the component's initial state.
 - Now for the new part! Inside of `componentDidMount`, use the `subscribe` method that lives on `store`.
   - `subscribe` takes a callback function as its argument.
@@ -563,7 +563,7 @@ Open up `Ingredients.js`. Import the `store` into this file, along with the acti
 import store, { ADD_INGREDIENT } from "./../../store";
 ```
 
-Just like we did before, we need to use the dispatch method. This time we only need to use it once, and it should go inside `addIngredient`. The type of the action object used in dispatch should match the action type we imported above, and the payload should pull the input value from state.
+Just like we did before, we need to use the `dispatch` method. This time we only need to use it once, and it should go inside `addIngredient`. The `type` of the `action` object used in `dispatch` should match what we imported above, and the `payload` should pull the input value from state.
 
 ```js
 addIngredient() {
@@ -577,7 +577,7 @@ addIngredient() {
 }
 ```
 
-Now just like before, we need to set up the constructor to pull in its initial state from Redux state.
+Now just like before, we need to set up the `constructor` to pull in its initial state from Redux state.
 
 ```js
 constructor(props) {
@@ -684,7 +684,7 @@ class Ingredients extends Component {
       });
     });
   }
-  // method omitted
+  // handler method omitted
   addIngredient() {
     store.dispatch({
       type: ADD_INGREDIENT,
@@ -713,12 +713,12 @@ In this step, we'll set up `Instructions.js` like we have `Ingredients.js`.
 - Open `/src/store.js`.
 - Add a property to `initialState` to store the list of instructions.
 - Create and export a constant to match.
-- Add a case to the `switch`.
+- Add a `case` to the `switch`.
 - Open `/src/components/Instructions/Instructions.js`.
 - Import the `store` and the instructions action type from `/src/store.js`.
 - Inside the `addInstruction` method, use `dispatch` (found on the `store`) to send an action object.
   - It should use the action type that was imported.
-  - It should pull the input data from state for the payload.
+  - It should pull the input data from state for the `payload`.
 - Inside the `constructor`, invoke the `getState` method (found on the `store`) and use the appropriate value from Redux state inside the component's initial state.
 - Inside of `componentDidMount`, use the `subscribe` method (found on the `store`).
   - The callback for `subscribe` should invoke `getState` just like the constructor does.
@@ -727,7 +727,7 @@ In this step, we'll set up `Instructions.js` like we have `Ingredients.js`.
 <details>
 <summary>Detailed Instructions</summary>
 
-First we need to add a new property to the initial Redux state, create an action type, and add a case to our `reducer`. This case will be very similar to the one we created for `Ingredients.js`
+First we need to add a new property to the initial Redux state, create an action type, and add a `case` to our `reducer`. This `case` will be very similar to the one we created for `Ingredients.js`
 
 ```js
 const initialState = {
@@ -752,7 +752,7 @@ Open up `Instructions.js`. Import the `store` into this file, along with the act
 import store, { ADD_INSTRUCTION } from "./../../store";
 ```
 
-Just like we did before, we need to use the dispatch method inside `addInstruction`. The type of the action object used in dispatch should match the action type we imported above, and the payload should pull the input value from state.
+Just like we did before, we need to use the `dispatch` method inside `addInstruction`. The `type` of the action object used in `dispatch` should match the action type we imported above, and the `payload` should pull the input value from state.
 
 ```js
 addInstruction() {
@@ -766,7 +766,7 @@ addInstruction() {
 }
 ```
 
-Now just like before, we need to set up the constructor to pull in its initial state from Redux state.
+Now just like before, we need to set up the `constructor` to pull in its initial state from Redux state.
 
 ```js
 constructor(props) {
@@ -874,7 +874,7 @@ class Instructions extends Component {
       });
     });
   }
-  // method omitted
+  // handler method omitted
   addInstruction() {
     store.dispatch({
       type: ADD_INSTRUCTION,
@@ -884,7 +884,7 @@ class Instructions extends Component {
       input: ""
     });
   }
-  // method & render omitted
+  // create method & render omitted
 }
 
 export default Instructions;
@@ -903,12 +903,12 @@ In this step, we'll use all the values we've saved on Redux to create a recipe.
 - Open `/src/store.js`.
 - Add a property to `initialState` to store the list of recipes.
 - Create and export a constant to match.
-- Add a case to the `switch`. This case should use the values already stored on state to create the new recipe and won't rely on a payload.
+- Add a `case` to the `switch`. This `case` should use the values already stored on state to create the new recipe and won't rely on a `payload`.
 - Open `/src/components/Instructions/Instructions.js`.
 - Import the recipe action type from `/src/store.js`.
 - Inside the `create` method, use `dispatch` (found on the `store`) to send an action object.
   - It should use the action type that was imported.
-  - It should not include a payload.
+  - It should not include a `payload`.
 
 <details>
 <summary>Detailed Instructions</summary>
@@ -929,7 +929,7 @@ const initialState = {
 export const ADD_RECIPE = "ADD_RECIPE";
 ```
 
-Now we'll add a case to our `reducer`. This case will be quite a bit different from what we've done so far, because it doesn't use a payload. Payloads are really useful when we need to transfer data from a component to Redux, but in this case all the data is already being stored in Redux. So we'll pull all the values we've been storing so far off of state and build a recipe object with it. Then we we'll want to copy our list of recipes and add our a new recipe to it. Then of course we need to copy the rest of state in an immutable way.
+Now we'll add a `case` to our `reducer`. This `case` will be quite a bit different from what we've done so far, because it doesn't use a `payload`. Payloads are really useful when we need to transfer data from a component to Redux, but in this circumstance all the data is already being stored in Redux. So we'll pull all the values we've been storing so far off of `state` and build a recipe object with it. Then we we'll want to copy our list of recipes and add our a new recipe to it. Then of course we need to copy the rest of `state` in an immutable way.
 
 ```js
 case ADD_RECIPE:
@@ -959,7 +959,7 @@ Open up `Instructions.js`. Import the recipe action type.
 import store, { ADD_INSTRUCTION, ADD_RECIPE } from "./../../store";
 ```
 
-We need to use the dispatch method again, this time inside `create`. The type of the action object used in dispatch should match the action type we just imported, and there shouldn't be a payload.
+We need to use the `dispatch` method again, this time inside `create`. The `type` of the action object used in dispatch should match the action type we just imported, and there shouldn't be a `payload`.
 
 ```js
 create() {
@@ -1072,7 +1072,7 @@ class Instructions extends Component {
       });
     });
   }
-  // method omitted
+  // handler method omitted
   addInstruction() {
     store.dispatch({
       type: ADD_INSTRUCTION,
@@ -1105,7 +1105,7 @@ Finally we'll get our recipes to display in `Home.js`.
 
 - Open `/src/components/Home/Home.js`.
 - Import the `store` from `/src/store.js`.
-- Inside the constructor, invoke the `getState` method (found on the `store`) and use the appropriate value from Redux state inside the component's initial state.
+- Inside the `constructor`, invoke the `getState` method (found on the `store`) and use the appropriate value from Redux state inside the component's initial state.
 
 <details>
 <summary>Detailed Instructions</summary>
